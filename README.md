@@ -10,7 +10,7 @@ All you need is typical music box, SLA 3D printer and Python installed on your c
 
 This script is made for most popular mechanism like on the picture below.
 
-![Mechanism reference](https://PashaWNN/midi_to_music_box/blob/main/mechanism.webp?raw=true)
+![Mechanism reference](https://raw.githubusercontent.com/PashaWNN/midi_to_music_box/main/mechanism.webp)
 
 ### Step 2. Write down the notes from your music box
 
@@ -61,14 +61,21 @@ Detach the gear from the original drum and attach it to your brand-new drum. Scr
 
 ### Troubleshooting
 
-Problem: Drum pins are too short to pluck the comb teeth.
-Solution: Try increasing its length in the `scadfile.scad.template`. It is done by altering `pinHeight` variable.
+**Problem**: Drum pins are too short to pluck the comb teeth.
 
-Problem: Pins seems to not match the comb teeth.
-Solution: Make sure the printed drum have correct length. Incorrect length could be caused by wrong print settings, high shrinkage, or other reasons. Also, make sure your music box has 18 notes. If that is not the case, try adjusting the `tonesTotalNumber` in the template (not tested).
+**Solution**: Try increasing its length in the `scadfile.scad.template`. It is done by altering `pinHeight` variable.
 
-Problem: The music is playing too slow/too fast.
-Solution: Try moving the governor on the music box higher/lower. Also experiment with the melody itself by placing notes closer/wider to each other.
 
-Problem: There is no delay after the end of playback
-Solution: Add some space before the first note in the composition.
+**Problem**: Pins seems to not match the comb teeth.
+
+**Solution**: Make sure the printed drum have correct length. Incorrect length could be caused by wrong print settings, high shrinkage, or other reasons. Also, make sure your music box has 18 notes. If that is not the case, try adjusting the `tonesTotalNumber` in the template (not tested).
+
+
+**Problem**: The music is playing too slow/too fast.
+
+**Solution**: Try moving the governor on the music box higher/lower. Also experiment with the melody itself by placing notes closer/wider to each other.
+
+
+**Problem**: There is no delay after the end of playback
+
+**Solution**: Add some space before the first note in the composition.
