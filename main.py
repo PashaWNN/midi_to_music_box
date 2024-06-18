@@ -1,6 +1,6 @@
 import sys
 from midi_convert import midi_to_music_score
-from templates import render_template, render_multitrack, render_indices
+from templates import render_template, render_multitrack
 
 SCAD_TEMPLATE = 'scadfile.scad.template'
 NOTES_FILE = 'notes.txt'
