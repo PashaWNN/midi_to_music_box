@@ -33,10 +33,8 @@ class NoteNumberGetter:
     """
     def __init__(self, available_notes: list[str]) -> None:
         self._notes_mapping = {
-            **{
-                note: (_indices(available_notes, note, start=1), -1)
-                for note in available_notes
-            }
+            note: (_indices(available_notes, note, start=1), -1)
+            for note in available_notes
         }
 
     def get_note_number(self, note: str) -> int:
