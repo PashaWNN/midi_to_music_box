@@ -52,9 +52,6 @@ cylinderBottomHoleD2 = 4;
 cylinderTopHoleWidth = 3.6;
 cylinderTopHoleHeight = 1;
 
-// the note numbers are defined in a list,
-// find the list named "notesIndexMap"
-//
 musicScore = ${musicScore};
 
 
@@ -69,9 +66,9 @@ tonesTotalNumber = 18;
 module generateBody() {
 	difference() {
 		cylinder(d=cylinderDiameter-cylinderTolerance, h=cylinderHeight, $fn=100, center=false);
-    
+
 		cylinder(d=cylinderDiameter-cylinderTolerance-cylinderThickness*2, h=cylinderHeight, $fn=100, center=false);
-    
+
 		// top hole
 		translate([cylinderDiameter/-2,cylinderTopHoleWidth/-2, cylinderHeight-cylinderTopHoleHeight])
 		cube([cylinderDiameter, cylinderTopHoleWidth, cylinderTopHoleHeight]);
@@ -80,44 +77,43 @@ module generateBody() {
 	translate([0, 0, -cylinderBottomHeight])
 	difference() {
 		cylinder(d=cylinderBottomDiameter, h=cylinderBottomHeight, $fn=64, center=false);
-
 		cylinder(d1=cylinderBottomHoleD1,d2=cylinderBottomHoleD2, h=cylinderBottomHeight, $fn=64, center=false);
 	}
 }
 
-module generatePins(notes) {
-    notesTotal = len(notes);		// total number of notes
-    offsetAngle = 360 / notesTotal; 	// the angle to rotate
-    
-    for(i=[0 :notesTotal-1]) {
-        toothId = notes[i];
+module generatePinsFromScore(score) {
+    scoreLength = len(score);
+    offsetAngle = 360 / scoreLength;
 
-        if( toothId > 0 ) {
-            angleMore = (enableAvoidTooNear && offsetAngle<10 && i>0 && notes[i-1] == notes[i] ? offsetAngle/2 : 0);
-            angle = (isCounterclockwise ? -1 : 1)*(offsetAngle*i+angleMore);
-        
-            rOffset = 0.3;
-            radius = cylinderDiameter/2-rOffset;
-            x = radius*cos(angle);
-            y = radius*sin(angle);
-            z = firstPinPosition+pinOffset*(isTopFirst ? (tonesTotalNumber-toothId) : toothId);  //the smaller the highter
-        
-            translate([x, y, z])
-            rotate([0, 0, angle])
-            rotate([0, 90, 0])
-           cylinder(d1=pinBaseDiameter, d2=pinDiameter, h=pinHeight+rOffset, $fn=20, center=false); //cylinder(r1=pinDiameter/2*2,r2=pinDiameter/2, h=pinHeight+rOffset, $fn=100, center=false);
-        } else if(notes[i] !=0 ) {
-            echo("==Not Exist== ",notes[i]);
+    for (i = [0:scoreLength - 1]) {
+        notes = score[i];
+        if (len(notes) - 1 > 0) {
+            for (noteIndex = [0:len(notes) - 1]) {
+                toothId = notes[noteIndex];
+                angle = (isCounterclockwise ? -1 : 1) * (offsetAngle * i);
+                rOffset = 0.3;  // How deep pins would protrude the cylinder
+                radius = cylinderDiameter / 2 - rOffset;
+                x = radius * cos(angle);
+                y = radius * sin(angle);
+                z = firstPinPosition + pinOffset * (isTopFirst ? (tonesTotalNumber - toothId) : toothId);
+                translate([x, y, z])
+                    rotate([0, 0, angle])
+                        rotate([0, 90, 0])
+                            cylinder(
+                            d1 = pinBaseDiameter,
+                            d2 = pinDiameter,
+                            h = pinHeight + rOffset,
+                            $fn = 20,
+                            center = false
+                            );
+            }
         }
     }
 }
 
 module generateMusicBoxCylinder() {
 	generateBody();
-	
-	for(i=[0 : len(musicScore)-1]) {
-		generatePins(musicScore[i]);
-	}
+    generatePinsFromScore(musicScore);
 }
 
 generateMusicBoxCylinder();

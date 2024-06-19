@@ -33,7 +33,6 @@ class NoteNumberGetter:
     """
     def __init__(self, available_notes: list[str]) -> None:
         self._notes_mapping = {
-            '0': ([0], -1),
             **{
                 note: (_indices(available_notes, note, start=1), -1)
                 for note in available_notes
@@ -56,24 +55,15 @@ class MusicScore:
     def _get_note_number(self, note: str) -> int:
         return self._note_number_getter.get_note_number(note)
 
-    def as_multitrack(self) -> list[list[int]]:
+    def as_track(self) -> list[list[int]]:
         """
         MusicScore representation for SCAD script.
-        Contains a list of tracks in which notes are represented as their indices
-        with a special index 0 (zero) for pause between playing notes.
-        Score is split so that there are enough tracks to have all notes that
-        should be played simultaneously are placed in different tracks.
+        Contains a list of lists, in which each list represents a single quant containing note numbers.
         """
-
-        tracks_count = len(max(self._score, key=len))
-        if not tracks_count:
-            return []
-        tracks = [[] for _ in range(tracks_count)]
-        for notes_line in self._score:
-            notes_line_appended = ['0' for _ in range(tracks_count)][len(notes_line):] + notes_line
-            for i, element in enumerate(notes_line_appended):
-                tracks[i].append(self._get_note_number(element))
-        return tracks
+        track = []
+        for note_track in self._score:
+            track.append(list(map(lambda note: self._get_note_number(note), note_track)))
+        return track
 
 
 def get_midi_time_quant(midi_file: mido.MidiFile) -> int:

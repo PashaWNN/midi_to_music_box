@@ -8,7 +8,7 @@ NOTES_FILE = 'notes.txt'
 
 def load_notes() -> list[str]:
     with open(NOTES_FILE) as f:
-        return f.readlines()
+        return f.read().splitlines()
 
 
 def run(*args) -> None:
@@ -22,7 +22,7 @@ def run(*args) -> None:
     available_notes = load_notes()
     music_score = midi_to_music_score(input_filename, available_notes=available_notes)
     scad_context = {
-        'musicScore': render_multitrack(music_score.as_multitrack()),
+        'musicScore': render_multitrack(music_score.as_track()),
     }
     scad_file = render_template(SCAD_TEMPLATE, context=scad_context)
     with open(output_filename, 'w') as f:
