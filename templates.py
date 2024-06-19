@@ -15,5 +15,5 @@ def render_multitrack(tracks: list[list[int]]) -> str:
     return '\n'.join([
         '[',
         *[f'  [{", ".join(map(str, track))}],' for track in tracks],
-        f'];  // lines count: {len(tracks[0])}'
+        f'];  // lines count: {len(tracks)}'
     ])
