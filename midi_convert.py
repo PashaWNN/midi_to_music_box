@@ -29,7 +29,8 @@ def _indices(lst: list, element, start: int = 0) -> list[int]:
 class NoteNumberGetter:
     """
     This class allows to get note number by note character
-    So that some note is available at different numbers, different number is returned each time.
+    so that if some note is available at different numbers,
+    different number is returned each time.
     """
     def __init__(self, available_notes: list[str]) -> None:
         self._notes_mapping = {
