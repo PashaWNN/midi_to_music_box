@@ -1,6 +1,6 @@
 import sys
 from midi_convert import midi_to_music_score
-from templates import render_template, render_multitrack
+from templates import render_template, render_track
 
 SCAD_TEMPLATE = 'scadfile.scad.template'
 NOTES_FILE = 'notes.txt'
@@ -22,7 +22,7 @@ def run(*args) -> None:
     available_notes = load_notes()
     music_score = midi_to_music_score(input_filename, available_notes=available_notes)
     scad_context = {
-        'musicScore': render_multitrack(music_score.as_track()),
+        'musicScore': render_track(music_score.as_track()),
     }
     scad_file = render_template(SCAD_TEMPLATE, context=scad_context)
     with open(output_filename, 'w') as f:
