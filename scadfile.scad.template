@@ -87,7 +87,7 @@ module generatePinsFromScore(score) {
 
     for (i = [0:scoreLength - 1]) {
         notes = score[i];
-        if (len(notes) - 1 > 0) {
+        if (len(notes) > 0) {
             for (noteIndex = [0:len(notes) - 1]) {
                 toothId = notes[noteIndex];
                 angle = (isCounterclockwise ? -1 : 1) * (offsetAngle * i);
