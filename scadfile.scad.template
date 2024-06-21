@@ -39,6 +39,7 @@ pinHeight = 0.6;
 
 // The distance between two pins
 pinOffset = 0.9;
+rOffset = 0.3;  // How deep pins would protrude the cylinder
 
 // The position of the first pin
 firstPinPosition = 1.9 + pinBaseDiameter / 4;
@@ -64,7 +65,7 @@ tonesTotalNumber = 18;
 
 
 // generate cylinder body
-module generateBody() {
+module cylinderBody() {
     if (enableRibs) {
         ribLength = cylinderDiameter - cylinderTolerance - cylinderThickness;
         translate([-ribLength / 2, -ribWidth / 2, 0])
@@ -90,7 +91,27 @@ module generateBody() {
 	}
 }
 
-module generatePinsFromScore(score) {
+module pin() {
+    rotate([0, 90, 0])
+    union() {
+        cylinder(
+        d1 = pinBaseDiameter + .5,
+        d2 = pinDiameter,
+        h = (pinHeight + rOffset) / 1.5,
+        $fn = 20,
+        center = false
+        );
+        cylinder(
+        d1 = pinBaseDiameter,
+        d2 = pinDiameter,
+        h = pinHeight + rOffset,
+        $fn = 20,
+        center = false
+        );
+    }
+}
+
+module pinsFromScore(score) {
     scoreLength = len(score);
     offsetAngle = 360 / scoreLength;
 
@@ -100,29 +121,21 @@ module generatePinsFromScore(score) {
             for (noteIndex = [0:len(notes) - 1]) {
                 toothId = notes[noteIndex];
                 angle = (isCounterclockwise ? -1 : 1) * (offsetAngle * i);
-                rOffset = 0.3;  // How deep pins would protrude the cylinder
                 radius = cylinderDiameter / 2 - rOffset;
                 x = radius * cos(angle);
                 y = radius * sin(angle);
                 z = firstPinPosition + pinOffset * (isTopFirst ? (tonesTotalNumber - toothId) : toothId);
                 translate([x, y, z])
                     rotate([0, 0, angle])
-                        rotate([0, 90, 0])
-                            cylinder(
-                            d1 = pinBaseDiameter,
-                            d2 = pinDiameter,
-                            h = pinHeight + rOffset,
-                            $fn = 20,
-                            center = false
-                            );
+                        pin();
             }
         }
     }
 }
 
 module generateMusicBoxCylinder() {
-	generateBody();
-    generatePinsFromScore(musicScore);
+	cylinderBody();
+    pinsFromScore(musicScore);
 }
 
 generateMusicBoxCylinder();
