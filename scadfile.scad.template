@@ -21,11 +21,15 @@ cylinderDiameter = 13;
 cylinderThickness = 0.6;
 cylinderHeight = 20;
 
+
+/* [Internal Structure Settings] */
+enableRibs = true;
+ribWidth = 1.0;
+
 //cylinder diameter cylinderTolerance
 cylinderTolerance = 0.1;
 
 /* [Combo Teeth Setting] */
-comboWidth = 16.3;
 teethTotalNumber = 18;
 
 /* [Pins Size Setting] */
@@ -35,9 +39,6 @@ pinHeight = 0.6;
 
 // The distance between two pins
 pinOffset = 0.9;
-
-// Additional offset if same note pins are too close
-enableAvoidTooNear = false;
 
 // The position of the first pin
 firstPinPosition = 1.9 + pinBaseDiameter / 4;
@@ -64,6 +65,14 @@ tonesTotalNumber = 18;
 
 // generate cylinder body
 module generateBody() {
+    if (enableRibs) {
+        ribLength = cylinderDiameter - cylinderTolerance - cylinderThickness;
+        translate([-ribLength / 2, -ribWidth / 2, 0])
+            cube([ribLength, ribWidth, cylinderHeight - cylinderTopHoleHeight]);
+        rotate([0, 0, 90])
+            translate([-ribLength / 2, -ribWidth / 2, 0])
+                cube([ribLength, ribWidth, cylinderHeight - cylinderTopHoleHeight]);
+    }
 	difference() {
 		cylinder(d=cylinderDiameter-cylinderTolerance, h=cylinderHeight, $fn=100, center=false);
 
