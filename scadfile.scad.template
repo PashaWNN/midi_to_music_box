@@ -23,7 +23,7 @@ cylinderHeight = 20;
 
 
 /* [Internal Structure Settings] */
-enableRibs = true;
+enableRibs = ${enableRibs};
 ribWidth = 1.0;
 
 //cylinder diameter cylinderTolerance

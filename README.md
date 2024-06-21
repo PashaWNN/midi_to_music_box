@@ -44,14 +44,16 @@ install needed Python packages:
 pip install -r requirements.txt
 ```
 
-When all requirements are installed, run the script `main.py` and pass your file as an argument:
+When all requirements are installed, run the script `main.py`:
 
 ```shell
-python3 main.py my_wholesome_melody.mid
+python3 main.py
 ```
 
+You will be prompted to enter the MIDI filename and the notes file. For additional options, run `python3 main.py --help`
+
 The script will show an error message if some notes from the MIDI file are missing on your music box (as you have
-written notes down to `notes.txt`). If everything is fine, you will see the new file with a `.scad` extension in your
+written notes down to the file you specified). If everything is fine, you will see the new file with a `.scad` extension in your
 working directory. Open this file in OpenSCAD and use it to render and export an STL file.
 
 ### Step 5. Print the model
