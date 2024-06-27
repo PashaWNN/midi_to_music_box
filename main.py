@@ -1,9 +1,6 @@
 import click
 
-from midi_convert import midi_to_music_score
-from templates import render_template, render_track
-
-SCAD_TEMPLATE = 'scadfile.scad.template'
+from midi_convert import convert_midi_to_scad
 
 
 def get_default_output_filename() -> str:
@@ -21,7 +18,7 @@ def deactivate_prompts(ctx, _, value):
 
 @click.command()
 @click.option('-q/--quiet', default=False, is_eager=True, expose_value=False, callback=deactivate_prompts)
-@click.option('--midi-file', prompt='MIDI file to process', help='MIDI file path', type=click.Path(exists=True))
+@click.option('--midi-file', prompt='MIDI file to process', help='MIDI file path', type=click.File('rb'))
 @click.option(
     '--notes-file', '--notes',
     prompt='Notes list file',
@@ -50,13 +47,12 @@ def deactivate_prompts(ctx, _, value):
     is_flag=True,
 )
 def run(midi_file, output_file, notes_file, template, disable_ribs) -> None:
-    available_notes = notes_file.read().splitlines()
-    music_score = midi_to_music_score(midi_file, available_notes=available_notes)
-    scad_context = {
-        'musicScore': render_track(music_score.as_track()),
-        'enableRibs': 'false' if disable_ribs else 'true',
-    }
-    scad_file_contents = render_template(template, context=scad_context)
+    scad_file_contents = convert_midi_to_scad(
+        midi_file=midi_file,
+        available_notes_string=notes_file.read(),
+        template=template,
+        disable_ribs=disable_ribs,
+    )
     output_file.write(scad_file_contents)
 
 

@@ -1,14 +1,27 @@
+---
+title: MIDI to music box
+emoji: 🎶🎶
+colorFrom: red
+colorTo: yellow
+sdk: gradio
+sdk_version: "4.36.1"
+app_file: app.py
+pinned: false
+---
+
 # Music Box Movement Drum Generator
 
-Have you ever wondered if you can create a melody for the music box by yourself? It is made possible with this script.
-All you need is a typical music box, an SLA 3D printer, and Python installed on your computer.
+Have you ever wondered if you can create a melody for the music box by yourself? It is made possible with this app.
+All you need is a typical music box, an SLA 3D printer and this app.
+
+App on HuggingFace: [MIDI to Music Box](https://huggingface.co/spaces/PashaWNN/midi_to_music_box)
 
 ## Custom Music Box Step-by-step guide
 
 ### Step 1. Get a music box movement mechanism.
 
 This script is designed for the most popular mechanism, like the one shown in the picture below.
-![Mechanism reference](https://raw.githubusercontent.com/PashaWNN/midi_to_music_box/main/mechanism.webp)
+![Mechanism reference](https://raw.githubusercontent.com/PashaWNN/midi_to_music_box/main/media/mechanism.webp)
 
 ### Step 2. Write down the notes from your music box
 
@@ -17,8 +30,6 @@ the notes.
 You can use any tuner mobile or web app to check the notes using a microphone.
 This is necessary because music boxes tend to have different tuning. Also, it is common to have some notes appearing
 twice on different comb teeth.
-Once you have written the notes down, starting from the left side (near the spring) to the right side near the drum
-screw, write them line by line to the file `notes.txt`.
 
 ### Step 3. Compose a music track.
 
@@ -37,24 +48,12 @@ There are some limitations to the composed melody:
 ### Step 4. Generate an STL
 
 Once your composition is completed and saved as a `.mid` file, you are all set to generate an STL.
-Make sure you have installed all the requirements: you need to have Python 3 and OpenSCAD installed, then you need to
-install needed Python packages:
 
-```shell
-pip install -r requirements.txt
-```
+Visit the app here: [MIDI to Music Box](https://huggingface.co/spaces/PashaWNN/midi_to_music_box).
+You will be prompted to enter the MIDI filename and the available notes.
 
-When all requirements are installed, run the script `main.py`:
-
-```shell
-python3 main.py
-```
-
-You will be prompted to enter the MIDI filename and the notes file. For additional options, run `python3 main.py --help`
-
-The script will show an error message if some notes from the MIDI file are missing on your music box (as you have
-written notes down to the file you specified). If everything is fine, you will see the new file with a `.scad` extension in your
-working directory. Open this file in OpenSCAD and use it to render and export an STL file.
+The script will show an error message if some notes from the MIDI file are missing on your music box. 
+If everything is fine, you will see the model and be able to download it by clicking tiny download button in the corner.
 
 ### Step 5. Print the model
 
@@ -66,15 +65,10 @@ Detach the gear from the original drum and attach it to your brand-new drum. Scr
 
 ### Troubleshooting
 
-**Problem**: Drum pins are too short to pluck the comb teeth.
-**Solution**: Try increasing its length in the `scadfile.scad.template`. It is done by altering the `pinHeight`
-variable.
-**Problem**: Pins seem to not match the comb teeth.
-**Solution**: Make sure the printed drum has the correct length. Incorrect length could be caused by wrong print
-settings, high shrinkage, or other reasons. Also, make sure your music box has 18 notes. If that is not the case, try
-adjusting the `tonesTotalNumber` in the template (not tested).
 **Problem**: The music is playing too slow/too fast.
 **Solution**: Try moving the governor on the music box higher/lower. Also, experiment with the melody itself by placing
 notes closer/wider to each other.
 **Problem**: There is no delay after the end of playback
 **Solution**: Add some space before the first note in the composition.
+**Problem**: I can not access the app
+**Solution**: You can try contacting me or running it locally. To run it locally you will need Docker installed on your machine. Clone the repository and run `docker build -t gradio-app . && docker run -p 7860:7860 gradio-app` in its root. Then just open the app [in your browser](http://127.0.0.1:7860).

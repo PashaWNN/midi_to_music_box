@@ -1,8 +1,16 @@
+import io
+import re
+import typing
+
 import mido
+
+from templates import render_track, render_template
 
 NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 OCTAVES = list(range(11))
 NOTES_IN_OCTAVE = len(NOTES)
+
+SCAD_TEMPLATE = 'scadfile.scad.template'
 
 
 def number_to_note(number: int) -> str:
@@ -78,8 +86,8 @@ def get_midi_time_quant(midi_file: mido.MidiFile) -> int:
     raise ValueError('Could not find any note with valid time in MIDI file.')
 
 
-def midi_to_music_score(midi_filename: str, available_notes: list[str]) -> MusicScore:
-    midi_file = mido.MidiFile(midi_filename)
+def midi_to_music_score(midi_file: typing.IO, available_notes: list[str]) -> MusicScore:
+    midi_file = mido.MidiFile(file=midi_file)
     score = [[]]
     time_quant = get_midi_time_quant(midi_file)
     for track in midi_file.tracks:
@@ -95,3 +103,22 @@ def midi_to_music_score(midi_filename: str, available_notes: list[str]) -> Music
                     raise ValueError(f'MIDI file contains notes that are not available in music box: {note}.')
                 current_frame.append(note)
     return MusicScore(score, available_notes)
+
+
+def parse_notes_from_text(text: str) -> list[str]:
+    return list(map(str.upper, re.findall(r'[A-G]{1}(?:#|b{1})?\d', text)))
+
+
+def convert_midi_to_scad(
+    midi_file: typing.IO,
+    available_notes_string: str,
+    template: str = SCAD_TEMPLATE,
+    disable_ribs: bool = False
+) -> str:
+    available_notes = parse_notes_from_text(available_notes_string)
+    music_score = midi_to_music_score(midi_file, available_notes=available_notes)
+    scad_context = {
+        'musicScore': render_track(music_score.as_track()),
+        'enableRibs': 'false' if disable_ribs else 'true',
+    }
+    return render_template(template, context=scad_context)
