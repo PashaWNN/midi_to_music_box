@@ -49,7 +49,7 @@ iface = gradio.Interface(
     title='MIDI to Music Box',
     description='''
     This app allows you to convert MIDI files to printable 3D model of the music box drum. 
-    More on that in the README.md
+    Tutorial is available on the [GitHub](https://github.com/PashaWNN/midi_to_music_box)
     ''',
     inputs=[
         gradio.File(label='MIDI file', file_types=['.mid'], type='binary'),
