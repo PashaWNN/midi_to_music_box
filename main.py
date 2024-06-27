@@ -1,6 +1,6 @@
 import click
 
-from midi_convert import convert_midi_to_scad
+from midi_convert import convert_midi_to_scad, SCAD_TEMPLATE
 
 
 def get_default_output_filename() -> str:
