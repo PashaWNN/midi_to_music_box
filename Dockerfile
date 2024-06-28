@@ -15,12 +15,12 @@ RUN apt-get clean
 
 
 WORKDIR /usr/src/app
-RUN mkdir /gradiofiles
+RUN mkdir /tmp/gradio
 RUN pip install --no-cache-dir gradio
 COPY . .
 RUN pip install -r requirements.txt
 EXPOSE 7860
 ENV GRADIO_SERVER_NAME="0.0.0.0"
-ENV GRADIO_TEMP_DIR="/gradiofiles"
+ENV GRADIO_TEMP_DIR="/tmp/gradio"
 
 CMD ["python", "app.py"]

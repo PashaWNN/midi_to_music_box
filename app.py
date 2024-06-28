@@ -24,7 +24,7 @@ def run_openscad(input_filename, output_filename):
 
 
 def run_app(midi_bytes, notes, internal_structure_type):
-    scad_file = tempfile.NamedTemporaryFile(dir=temporary_directory.name, mode='w')
+    scad_file = tempfile.NamedTemporaryFile(dir=temporary_directory.name, mode='w', delete=False)
     stl_file = tempfile.NamedTemporaryFile(delete=False, dir=temporary_directory.name, suffix='.stl')
     scad_file_contents = convert_midi_to_scad(
         midi_file=io.BytesIO(midi_bytes),
