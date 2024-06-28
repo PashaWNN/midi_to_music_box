@@ -23,10 +23,15 @@ cylinderHeight = 20;
 
 
 /* [Internal Structure Settings] */
-enableRibs = ${enableRibs};
+// Hollow, solid or ribbed cylinder
+internalStructureType = "${internalStructureType}"; // [HOLLOW, RIBS, SOLID]
+// Width of the rib (only for internalStructureType = ribs)
 ribWidth = 1.0;
+// Internal structure height delta (how much of the top is hollow)
+structureHeightDelta = 4.0;
 
-//cylinder diameter cylinderTolerance
+
+// Cylinder diameter tolerance
 cylinderTolerance = 0.1;
 
 /* [Combo Teeth Setting] */
@@ -64,51 +69,63 @@ musicScore = ${musicScore};
 tonesTotalNumber = 18;
 
 
+
+module rib() {
+    ribLength = cylinderDiameter - cylinderTolerance - cylinderThickness;
+    difference() {
+        translate([-ribLength / 2, -ribWidth / 2, 0])
+            cube([ribLength, ribWidth, cylinderHeight - cylinderTopHoleHeight - structureHeightDelta]);
+        cylinder(d1 = cylinderBottomHoleD2, d2 = 0, h = cylinderBottomHeight, $fn = 64, center =
+        false);
+    }
+}
+
+
 // generate cylinder body
 module cylinderBody() {
-    if (enableRibs) {
-        ribLength = cylinderDiameter - cylinderTolerance - cylinderThickness;
-        translate([-ribLength / 2, -ribWidth / 2, 0])
-            cube([ribLength, ribWidth, cylinderHeight - cylinderTopHoleHeight]);
+    if (internalStructureType == "RIBS") {
+        rib();
         rotate([0, 0, 90])
-            translate([-ribLength / 2, -ribWidth / 2, 0])
-                cube([ribLength, ribWidth, cylinderHeight - cylinderTopHoleHeight]);
+            rib();
     }
-	difference() {
-		cylinder(d=cylinderDiameter-cylinderTolerance, h=cylinderHeight, $fn=100, center=false);
+    difference() {
+        cylinder(d = cylinderDiameter - cylinderTolerance, h = cylinderHeight, $fn = 100, center = false);
 
-		cylinder(d=cylinderDiameter-cylinderTolerance-cylinderThickness*2, h=cylinderHeight, $fn=100, center=false);
+        translate([0, 0, (internalStructureType == "SOLID" ? cylinderHeight - structureHeightDelta : 0)])
+            cylinder(d = cylinderDiameter - cylinderTolerance - cylinderThickness * 2, h =
+            (internalStructureType == "SOLID" ? structureHeightDelta : cylinderHeight), $fn = 100, center = false);
 
-		// top hole
-		translate([cylinderDiameter/-2,cylinderTopHoleWidth/-2, cylinderHeight-cylinderTopHoleHeight])
-		cube([cylinderDiameter, cylinderTopHoleWidth, cylinderTopHoleHeight]);
-	}
-	// bottom
-	translate([0, 0, -cylinderBottomHeight])
-	difference() {
-		cylinder(d=cylinderBottomDiameter, h=cylinderBottomHeight, $fn=64, center=false);
-		cylinder(d1=cylinderBottomHoleD1,d2=cylinderBottomHoleD2, h=cylinderBottomHeight, $fn=64, center=false);
-	}
+        // top hole
+        translate([cylinderDiameter / -2, cylinderTopHoleWidth / -2, cylinderHeight - cylinderTopHoleHeight])
+            cube([cylinderDiameter, cylinderTopHoleWidth, cylinderTopHoleHeight]);
+    }
+    // bottom
+    translate([0, 0, -cylinderBottomHeight])
+        difference() {
+            cylinder(d = cylinderBottomDiameter, h = cylinderBottomHeight, $fn = 64, center = false);
+            cylinder(d1 = cylinderBottomHoleD1, d2 = cylinderBottomHoleD2, h = cylinderBottomHeight, $fn = 64, center =
+            false);
+        }
 }
 
 module pin() {
     rotate([0, 90, 0])
-    union() {
-        cylinder(
-        d1 = pinBaseDiameter + .5,
-        d2 = pinDiameter,
-        h = (pinHeight + rOffset) / 1.5,
-        $fn = 20,
-        center = false
-        );
-        cylinder(
-        d1 = pinBaseDiameter,
-        d2 = pinDiameter,
-        h = pinHeight + rOffset,
-        $fn = 20,
-        center = false
-        );
-    }
+        union() {
+            cylinder(
+            d1 = pinBaseDiameter + .5,
+            d2 = pinDiameter,
+            h = (pinHeight + rOffset) / 1.5,
+            $fn = 20,
+            center = false
+            );
+            cylinder(
+            d1 = pinBaseDiameter,
+            d2 = pinDiameter,
+            h = pinHeight + rOffset,
+            $fn = 20,
+            center = false
+            );
+        }
 }
 
 module pinsFromScore(score) {
@@ -134,7 +151,7 @@ module pinsFromScore(score) {
 }
 
 module generateMusicBoxCylinder() {
-	cylinderBody();
+    cylinderBody();
     pinsFromScore(musicScore);
 }
 

@@ -1,3 +1,4 @@
+import enum
 import io
 import re
 import typing
@@ -11,6 +12,12 @@ OCTAVES = list(range(11))
 NOTES_IN_OCTAVE = len(NOTES)
 
 SCAD_TEMPLATE = 'scadfile.scad.template'
+
+
+class InternalStructureType(enum.Enum):
+    HOLLOW = 'HOLLOW'
+    RIBS = 'RIBS'
+    SOLID = 'SOLID'
 
 
 def number_to_note(number: int) -> str:
@@ -113,12 +120,12 @@ def convert_midi_to_scad(
     midi_file: typing.IO,
     available_notes_string: str,
     template: str = SCAD_TEMPLATE,
-    disable_ribs: bool = False
+    internal_structure_type: InternalStructureType = InternalStructureType.HOLLOW
 ) -> str:
     available_notes = parse_notes_from_text(available_notes_string)
     music_score = midi_to_music_score(midi_file, available_notes=available_notes)
     scad_context = {
         'musicScore': render_track(music_score.as_track()),
-        'enableRibs': 'false' if disable_ribs else 'true',
+        'internalStructureType': internal_structure_type,
     }
     return render_template(template, context=scad_context)

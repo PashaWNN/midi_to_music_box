@@ -4,7 +4,7 @@ import tempfile
 
 import gradio
 from subprocess import Popen, PIPE
-from midi_convert import convert_midi_to_scad
+from midi_convert import convert_midi_to_scad, InternalStructureType
 
 temporary_directory = tempfile.TemporaryDirectory()
 
@@ -22,13 +22,13 @@ def run_openscad(input_filename, output_filename):
     process.communicate()
 
 
-def run_app(midi_bytes, notes, disable_ribs):
+def run_app(midi_bytes, notes, internal_structure_type):
     scad_file = tempfile.NamedTemporaryFile(dir=temporary_directory.name, mode='w')
     stl_file = tempfile.NamedTemporaryFile(delete=False, dir=temporary_directory.name, suffix='.stl')
     scad_file_contents = convert_midi_to_scad(
         midi_file=io.BytesIO(midi_bytes),
         available_notes_string=notes,
-        disable_ribs=disable_ribs,
+        internal_structure_type=internal_structure_type,
     )
     scad_file.write(scad_file_contents)
     scad_file.flush()
@@ -61,7 +61,14 @@ iface = gradio.Interface(
         ),
     ],
     additional_inputs=[
-        gradio.Checkbox(label='Disable inner ribs generation')
+        gradio.Dropdown(
+            label='Internal structure type',
+            choices=[
+                (v.value.title(), v) for _, v in
+                InternalStructureType.__members__.items()
+            ],
+            value=InternalStructureType.HOLLOW,
+        )
     ],
     outputs=[gradio.Model3D()],
     allow_flagging='never',

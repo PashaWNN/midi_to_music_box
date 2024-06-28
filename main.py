@@ -1,11 +1,14 @@
 import click
 
-from midi_convert import convert_midi_to_scad, SCAD_TEMPLATE
+from midi_convert import convert_midi_to_scad, SCAD_TEMPLATE, InternalStructureType
 
 
 def get_default_output_filename() -> str:
     click_context = click.get_current_context()
-    return click_context.params.get('midi_file', 'out') + '.scad'
+    midi_file = click_context.params.get('midi_file')
+    if midi_file is not None:
+        return f'{midi_file.name}.scad'
+    return 'out.scad'
 
 
 def deactivate_prompts(ctx, _, value):
@@ -40,18 +43,17 @@ def deactivate_prompts(ctx, _, value):
     type=click.Path(exists=True),
 )
 @click.option(
-    '--disable-ribs',
-    help='Disable ribs generation. May be useful for faster printing while experimenting.',
-    default=False,
-    type=click.BOOL,
-    is_flag=True,
+    '--internal-structure',
+    help='Choose the internal structure type.',
+    default=InternalStructureType.HOLLOW,
+    type=click.Choice(list(map(str, InternalStructureType.__members__.keys())), case_sensitive=False),
 )
-def run(midi_file, output_file, notes_file, template, disable_ribs) -> None:
+def run(midi_file, output_file, notes_file, template, internal_structure) -> None:
     scad_file_contents = convert_midi_to_scad(
         midi_file=midi_file,
         available_notes_string=notes_file.read(),
         template=template,
-        disable_ribs=disable_ribs,
+        internal_structure_type=internal_structure,
     )
     output_file.write(scad_file_contents)
 
