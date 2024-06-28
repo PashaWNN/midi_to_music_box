@@ -1,6 +1,6 @@
 .venv
 .idea
-*.mid
+/*.mid
 *.scad
 __pycache__
 notes_*.txt

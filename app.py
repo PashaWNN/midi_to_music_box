@@ -1,5 +1,6 @@
 import io
 import os
+import pathlib
 import tempfile
 
 import gradio
@@ -9,7 +10,7 @@ from midi_convert import convert_midi_to_scad, InternalStructureType
 temporary_directory = tempfile.TemporaryDirectory()
 
 OPENSCAD_BINARY = os.getenv('OPENSCAD_BINARY', 'openscad')
-with open('notes.txt') as f:
+with open('examples/notes.txt') as f:
     DEFAULT_NOTES = f.read()
 
 
@@ -43,6 +44,16 @@ article = '''
     </p>
 '''
 
+examples_root = pathlib.Path(__file__).parent.joinpath("examples")
+
+examples = [
+    [
+        str(examples_root.joinpath("potatoes_and_molasses.mid")),
+        DEFAULT_NOTES,
+        'RIBS',
+    ],
+]
+
 
 iface = gradio.Interface(
     fn=run_app,
@@ -67,9 +78,10 @@ iface = gradio.Interface(
                 (v.value.title(), v) for _, v in
                 InternalStructureType.__members__.items()
             ],
-            value=InternalStructureType.HOLLOW,
+            value=InternalStructureType.HOLLOW.value,
         )
     ],
     outputs=[gradio.Model3D()],
+    examples=examples,
     allow_flagging='never',
 ).launch(debug=True, show_error=True)
