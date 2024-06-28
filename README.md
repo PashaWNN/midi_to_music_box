@@ -72,3 +72,13 @@ notes closer/wider to each other.
 **Solution**: Add some space before the first note in the composition.
 **Problem**: I can not access the app
 **Solution**: You can try contacting me or running it locally. To run it locally you will need Docker installed on your machine. Clone the repository and run `docker build -t gradio-app . && docker run -p 7860:7860 gradio-app` in its root. Then just open the app [in your browser](http://127.0.0.1:7860).
+**Problem**: I use command line interface version of the script, and it fails to find OpenSCAD
+**Solution**: If you have OpenSCAD installed, but it is not found by the script, you have to options: either you need to add OpenSCAD to your PATH or you can just specify `OPENSCAD_BINARY` environment variable with the path to the OpenSCAD binary.
+
+
+### All ways to run it.
+
+1. Go to the HuggingFace: [MIDI to Music Box](https://huggingface.co/spaces/PashaWNN/midi_to_music_box);
+2. Run it using Docker: `docker build -t gradio-app . && docker run -p 7860:7860 gradio-app` then go to `http://127.0.0.1:7860` in the browser;
+3. Run the web app without Docker: `pip install -r requirements.txt && python3 app.py` then go to `http://127.0.0.1:7860` in the browser;
+4. Run it using CLI: `pip install -r requirements.txt && python3 main.py`. It prompts you for main options, and you can also check out `python3 main.py --help` to see available command line arguments.
