@@ -78,7 +78,7 @@ iface = gradio.Interface(
                 (v.value.title(), v) for _, v in
                 InternalStructureType.__members__.items()
             ],
-            value=InternalStructureType.HOLLOW.value,
+            value=InternalStructureType.HOLLOW.value.title(),
         )
     ],
     outputs=[gradio.Model3D()],
